@@ -1,21 +1,54 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Outfit, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { LenisProvider } from "@/components/layout/LenisProvider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const outfit = Outfit({
+  variable: "--font-outfit",
+  subsets: ["latin"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "AI Kuttan | Your business. Digitally powered.",
-  description: "Technology and digital transformation company for MSMEs, startups and organizations.",
+  metadataBase: new URL('https://pixlbyts.com'),
+  title: {
+    default: "PIXLBYTS | Technology that works. Experiences that connect.",
+    template: "%s | PIXLBYTS"
+  },
+  description: "Multidisciplinary creative technology and physical brand execution company building intelligent digital software and tangible spatial presence.",
+  openGraph: {
+    title: "PIXLBYTS",
+    description: "Technology that works. Experiences that connect.",
+    url: 'https://pixlbyts.com',
+    siteName: 'PIXLBYTS',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'PIXLBYTS',
+    description: 'Technology that works. Experiences that connect.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default function RootLayout({
@@ -24,9 +57,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="antialiased">
+    <html lang="en" className="antialiased dark">
+      <head>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background text-foreground flex flex-col`}
+        className={`${inter.variable} ${outfit.variable} ${jetbrainsMono.variable} min-h-[100svh] bg-surface-base text-text-primary flex flex-col selection:bg-accent-orange selection:text-white`}
       >
         <LenisProvider>
           <main className="flex-1">
