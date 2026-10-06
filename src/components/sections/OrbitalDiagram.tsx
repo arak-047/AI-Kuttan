@@ -95,11 +95,14 @@ export function OrbitalDiagram() {
 
     gsap.ticker.add(updateNodes);
 
-    // 4. Initialize Draggable
-    Draggable.create(wheel, {
-      type: "rotation",
-      onPress: () => autoSpin.pause(),
-      onRelease: () => autoSpin.play(),
+    // 4. Initialize Draggable only on desktop/tablet so mobile can natively scroll
+    let mm = gsap.matchMedia();
+    mm.add("(min-width: 768px)", () => {
+      Draggable.create(wheel, {
+        type: "rotation",
+        onPress: () => autoSpin.pause(),
+        onRelease: () => autoSpin.play(),
+      });
     });
 
     // Initial setup call
@@ -109,15 +112,22 @@ export function OrbitalDiagram() {
       gsap.ticker.remove(updateNodes);
       autoSpin.kill();
       armAnimations.forEach(anim => anim.kill());
-      const draggables = Draggable.get(wheel);
-      if (draggables) draggables.kill();
+      mm.revert();
+      const draggables = Draggable.get(wheel) as any;
+      if (draggables) {
+        if (Array.isArray(draggables)) {
+           draggables.forEach(d => d.kill());
+        } else {
+           draggables.kill();
+        }
+      }
     };
   }, []);
 
   const selectedService = SERVICES.find(s => s.id === selectedId) || SERVICES[0];
 
   return (
-    <div className="relative w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-0 overflow-hidden touch-none" ref={containerRef}>
+    <div className="relative w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-0 overflow-hidden" ref={containerRef}>
       
       {/* Left Side: The Rotating Diagram */}
       <div className="relative w-full lg:w-[60%] h-[500px] md:h-[700px] flex items-center justify-center flex-shrink-0">
@@ -195,7 +205,7 @@ export function OrbitalDiagram() {
 
         {/* Central Hub matching PIXLBYTS Dark Theme - FIXED OUTSIDE THE ROTATING CONTAINER */}
         <div 
-          className="absolute top-1/2 left-1/2 z-20 bg-surface-raised border border-border-prominent flex flex-col items-center justify-center shadow-[0_0_40px_rgba(249,115,22,0.15)] pointer-events-none overflow-hidden rounded-full shrink-0 w-[130px] h-[130px] md:w-[180px] md:h-[180px]"
+          className="absolute top-1/2 left-1/2 z-20 bg-surface-raised border border-border-prominent flex flex-col items-center justify-center shadow-[0_0_40px_rgba(249,115,22,0.15)] pointer-events-none overflow-hidden rounded-[50%] shrink-0 w-[130px] h-[130px] md:w-[180px] md:h-[180px]"
           style={{
             transform: 'translate(-50%, -50%)',
           }}
