@@ -10,6 +10,46 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const MobileSlideshow = ({ images, mode }: { images: string[], mode: 'dark' | 'light' }) => {
+  const [idx, setIdx] = useState(0);
+  const [isReduced, setIsReduced] = useState(false);
+
+  useEffect(() => {
+    const mm = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setIsReduced(mm.matches);
+    if (mm.matches) return;
+    
+    const timer = setInterval(() => {
+      setIdx(prev => (prev + 1) % images.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [images.length]);
+
+  return (
+    <div className="absolute inset-0 pointer-events-none md:hidden overflow-hidden z-0">
+      {images.map((src, i) => (
+        <div
+          key={src}
+          className="absolute inset-0 w-full h-full transition-all duration-[1200ms] ease-in-out"
+          style={{
+            opacity: idx === i || (isReduced && i === 0) ? (mode === 'dark' ? 0.12 : 0.04) : 0,
+            transform: idx === i || (isReduced && i === 0) ? 'scale(1.05)' : 'scale(1)',
+            backgroundImage: `url('${src}')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            filter: mode === 'dark' ? 'grayscale(40%)' : 'grayscale(100%)',
+          }}
+        />
+      ))}
+      {mode === 'dark' ? (
+        <div className="absolute inset-0 bg-gradient-to-t from-surface-base via-transparent to-surface-base/50"></div>
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-white/50"></div>
+      )}
+    </div>
+  );
+};
+
 export function NewHomepage() {
   const [scrolled, setScrolled] = useState(false);
   const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
@@ -169,6 +209,14 @@ export function NewHomepage() {
           }}
           onMouseLeave={() => setMousePos({ x: -1000, y: -1000 })}
         >
+          <MobileSlideshow 
+            images={[
+              "/pixlbyts/hero-image.png",
+              "/pixlbyts/products/images/FABRIC%20LED%20DISPLAYS.png",
+              "/pixlbyts/products/images/CREATIVE%20AUTOMATION%20KIOSK.png"
+            ]} 
+            mode="dark" 
+          />
           {/* Base dim dot grid */}
           <div className="absolute inset-0 pointer-events-none opacity-10 bg-[radial-gradient(#F97316_1px,transparent_1.5px)] [background-size:40px_40px]"></div>
           
@@ -263,6 +311,14 @@ export function NewHomepage() {
           }}
           onMouseLeave={() => setMousePos({ x: -1000, y: -1000 })}
         >
+          <MobileSlideshow 
+            images={[
+              "/pixlbyts/products/images/LED%20VIDEO%20WALLS.png",
+              "/pixlbyts/products/images/INSHOP%20BRANDING%20ARCHWAYS.png",
+              "/pixlbyts/products/images/MODULAR%20DISPLAY%20RACKS.png"
+            ]} 
+            mode="light" 
+          />
           {/* Base dim dot grid - inverted for light theme */}
           <div className="absolute inset-0 pointer-events-none opacity-[0.05] bg-[radial-gradient(#000000_1px,transparent_1.5px)] [background-size:40px_40px]"></div>
           
@@ -395,7 +451,7 @@ export function NewHomepage() {
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-px-6 md:scroll-auto hide-scrollbar -mx-6 px-6 md:mx-0 md:px-0 pb-12 pt-4 md:py-0" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
               {/* Pathways 01 to 06 */}
               {[
                 { title: `"I want to build a new business"`, desc: `Full-spectrum commercial genesis: brand identity, cloud architecture, MVP prototype, high-speed marketing site and commercial operations.` },
@@ -405,7 +461,7 @@ export function NewHomepage() {
                 { title: `"I want to improve my brand presence"`, desc: `Cohesive identity systems bridging digital guidelines with physical fabrication: architectural signs, fabric LED installations, and high-impact materials.` },
                 { title: `"I want to modernise my business"`, desc: `Migrate legacy tech debt to modern cloud microservices, automate paper trails, and revitalize customer touchpoints with modern UX.` },
               ].map((pathway, i) => (
-                <Link key={i} href="#contact" className="gsap-solution-card group p-8 rounded-xl bg-surface-raised border border-border-subtle hover:border-accent-orange transition-all duration-300 flex flex-col justify-between opacity-0">
+                <Link key={i} href="#contact" className="w-[85vw] md:w-auto shrink-0 snap-start md:snap-align-none gsap-solution-card group p-8 rounded-xl bg-surface-raised border border-border-subtle hover:border-accent-orange transition-all duration-300 flex flex-col justify-between opacity-0">
                   <div>
                     <div className="flex justify-between items-center mb-6">
                       <span className="w-10 h-10 rounded-lg bg-surface-elevated flex items-center justify-center text-accent-orange group-hover:bg-accent-orange group-hover:text-white transition-colors">
@@ -420,7 +476,7 @@ export function NewHomepage() {
               ))}
 
               {/* Pathway 07 */}
-              <Link href="#contact" className="gsap-solution-card group lg:col-span-3 p-8 rounded-xl bg-gradient-to-r from-surface-raised via-[#1A1E26] to-surface-raised border border-border-prominent hover:border-accent-orange transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-6 opacity-0">
+              <Link href="#contact" className="w-[85vw] md:w-auto shrink-0 snap-start md:snap-align-none gsap-solution-card group lg:col-span-3 p-8 rounded-xl bg-gradient-to-r from-surface-raised via-[#1A1E26] to-surface-raised border border-border-prominent hover:border-accent-orange transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-6 opacity-0">
                 <div className="flex items-start sm:items-center gap-6">
                   <span className="w-12 h-12 rounded-lg bg-accent-orange/20 text-accent-orange flex items-center justify-center shrink-0">
                   </span>
